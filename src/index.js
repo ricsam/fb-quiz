@@ -151,9 +151,22 @@ async function saveTrie(word, _tag) {
   return batch.commit();
 }
 
-function search(word) {
-  for (var i = 0; i < word.length; i++) {
-    
+async function search(word) {
+  const db = firebase.firestore();
+  const index = db.collection("index");
+  let base = index;
+  let tree = base.doc('tree');
+  for (let i = 0; i < word.length; i++) {
+    const letter = word[i];
+    base = tree.collection(letter);
+    let nextTree;
+    const nextTreeSnapshot = await tree.get();
+    if ( !nextTreeSnapshot.exists ) {
+      nextTree = index.doc();
+    } else {
+      nextTree = nextTreeSnapshot.get('tree');
+    }
+    tree = nextTree;
   }
 }
 
