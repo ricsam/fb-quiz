@@ -11,6 +11,8 @@ import './styles/bootstrap/bootstrap.css';
 import './styles/bootstrap/bootstrap-grid.css';
 import './index.css';
 
+import { saveTrie, search } from 'utils/fbSearchDB';
+
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
@@ -42,139 +44,18 @@ const config = {
 
 firebase.initializeApp(config);
 
-function has(obj, what) {
-  return Object.prototype.hasOwnProperty.call(obj, what);
-}
-
-const treeData = {
-  h: {
-    e: {
-      l: {
-        l: {
-          o: {
-            tags: 'id5',
-          },
-          p: {
-            tags: 'id4',
-          },
-          tags: 'id3',
-        },
-        tags: 'id2',
-      },
-      tags: 'id1',
-    },
-    tags: 'id0',
-  },
-  f: {
-    e: {
-      l: {
-        l: {
-          tags: 'id6',
-        },
-        tags: 'id7',
-      },
-      tags: 'id8',
-    },
-    tags: 'id9',
-  },
-};
-
-async function saveTrie(word, _tag) {
-  const tag = _tag || word;
-
-  const db = firebase.firestore();
-  const batch = db.batch();
-  const index = db.collection("index");
-  const tagsIndex = db.collection('tags');
-  const tagIndex = tagsIndex.doc(tag);
-
-  const tagRes = await tagIndex.get();
-  let duplicates = 0;
-
-  const variants = {
-    [tag]: true,
-    [word]: true
-  };
-
-  if (tagRes.exists && has(tagRes.data(), 'duplicates')) {
-    duplicates = tagRes.data().duplicates + 1;
-  }
-
-  let base = index;
-  let tree = base.doc('tree');
-
-  const generateSubTree = [];
-  const docRefs = {};
-
-  /* READ */
-  for (let i = 0; i < word.length; i++) {
-    const letter = word[i];
-    base = tree.collection(letter);
-    let nextTree;
-    const nextTreeSnapshot = await tree.get();
-    if ( !nextTreeSnapshot.exists ) {
-      nextTree = index.doc();
-      generateSubTree.push(letter);
-    } else {
-      nextTree = nextTreeSnapshot.get('tree');
-    }
-    docRefs[letter] = {tree, nextTree, base};
-    tree = nextTree;
-  }
-
-  /* WRITE */
-  await Promise.all(generateSubTree.map(letter => {
-    const {tree, nextTree} = docRefs[letter];
-    return batch.set(tree, {
-      tree: nextTree
-    });
-  }));
-
-  base = index;
-  tree = base.doc('tree');
-  for (let i = 0; i < word.length; i++) {
-    const letter = word[i];
-    const {base, nextTree} = docRefs[letter];
-
-    await batch.set(base.doc(tag), {
-      tag: tagIndex
-    });
-    tree = nextTree;
-  }
 
 
-  await batch.set(tagIndex, {
-    duplicates,
-    variants
-  }, {merge: true});
 
-  return batch.commit();
-}
 
-async function search(word) {
-  const db = firebase.firestore();
-  const index = db.collection("index");
-  let base = index;
-  let tree = base.doc('tree');
-  for (let i = 0; i < word.length; i++) {
-    const letter = word[i];
-    base = tree.collection(letter);
-    let nextTree;
-    const nextTreeSnapshot = await tree.get();
-    if ( !nextTreeSnapshot.exists ) {
-      nextTree = index.doc();
-    } else {
-      nextTree = nextTreeSnapshot.get('tree');
-    }
-    tree = nextTree;
-  }
-}
+
 
 // mV73RvdhQSNHtXDGOorb4jds
 
 async function saveUser(name) {
 
 
+  const db = firebase.firestore();
   // for (var i = 0; i < name.length; i++) {
   //   var letter = name[i];
 
@@ -183,18 +64,23 @@ async function saveUser(name) {
   //   baseIndex = level.index;
 
   // }
-  await saveTrie('lol');
-  await saveTrie('lal', 'lol');
-  await saveTrie('lul');
-  await saveTrie('lolla');
+  // await save('lol');
+  // await saveTrie('lal', 'lol');
+  // await saveTrie('lul');
+  // await saveTrie('lolla');
 
-  await search('l');
+  // await saveTrie(db, 'lagrport', {
+  //   tag: 'lagsport',
+  //   distance: 1
+  // });
 
-  console.log('done');
+  const result = await search(db, 'lag');
+
+
+  console.log(result);
 
   return;
 
-  const db = firebase.firestore();
   await db.collection("index").doc('tree').delete();
   await db.collection("index").doc('tagIndex').delete();
   await db.collection("index").doc('mappings').delete();
