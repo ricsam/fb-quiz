@@ -20,6 +20,9 @@ const ButtonBase = styled(BSButton)`
     border-color: transparent !important;
     outline: none;
   }
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 export default function Button(_props) {

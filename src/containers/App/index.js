@@ -31,7 +31,6 @@ const AppWrapper = styled(Container)`
 `;
 
 const Header = styled.header`
-  background-color: #222;
   height: 9.375rem;
   padding: 1.25rem;
   color: white;

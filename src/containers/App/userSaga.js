@@ -72,6 +72,10 @@ async function fbRemoveUser(credential) {
   } 
 }
 
+function* createUser() {
+  const user = firebase.auth().currentUser;
+}
+
 // denna funktion kommer från index.js att dispatcha logout action.
 function* deleteUser() {
   const credential = yield select(state => state.get('credential') || false);
@@ -83,6 +87,7 @@ export default function* userSaga() {
   yield takeLatest('fb:delete user', deleteUser);
   yield takeLatest('fb:login', login);
   yield takeLatest('fb:logout', logout);
+  yield takeLatest('fb:logged in', createUser);
   // kommer dispatchas från index.js via firebase.auth().onAuthStateChanged
   // yield takeLatest('fb:logged in', getDB);
 }

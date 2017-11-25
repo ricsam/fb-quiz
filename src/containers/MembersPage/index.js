@@ -13,20 +13,28 @@ import {Route, Link} from 'react-router-dom';
 import Welcome from 'containers/Welcome';
 
 const StyledButton = styled(DefaultButton)`
-  width: 200px;
+  width: 100%;
 `;
 
 
 
 const Button = ({ children, to, exact }) => (
   <Route path={to} exact={exact} children={({ match }) => (
-    <Link to={to}><StyledButton disabled={!!match}>{children}</StyledButton></Link>
+    <Link to={to} style={{'flex': '1'}}><StyledButton disabled={!!match}>{children}</StyledButton></Link>
   )}/>
 );
 
 const Nav = styled.div`
   text-align: left;
-  max-width: 600px;
+  display: flex;
+  flex-wrap: wrap;
+  @media (min-width: 480px) {
+  }
+`;
+
+const Wrapper = styled.div`
+  max-width: 800px;
+  margin: auto;
 `;
 
 
@@ -37,19 +45,19 @@ class MembersPage extends Component {
 
   render() {
     return (
-      <div>
-      <Nav>
-        <Button to="/" exact>Home</Button>
-        <Button to="/challenge">Challenge a member</Button>
-        <Button to="/wip">Play live game (22 online)</Button>
-        <Button to="/wip">Leaderboards</Button>
-        <Button to="/wip">Test your knowledge</Button>
-        <Button to="/wip">Submit your own questions</Button>
-        <Button to="/wip">Vote on questions to be added</Button>
-      </Nav>
-      <Route path="/" exact component={Welcome}/>
-      <Route path="/Challenge" component={Challenge}/>
-      </div>
+      <Wrapper>
+        <Nav>
+          <Button to="/" exact>Home</Button>
+          <Button to="/challenge">Challenge a member</Button>
+          <Button to="/wip">Play live game (22 online)</Button>
+          <Button to="/wip">Leaderboards</Button>
+          <Button to="/wip">Test your knowledge</Button>
+          <Button to="/wip">Submit your own questions</Button>
+          <Button to="/wip">Vote on questions to be added</Button>
+        </Nav>
+        <Route path="/" exact component={Welcome}/>
+        <Route path="/Challenge" component={Challenge}/>
+      </Wrapper>
     );
   }
 }
