@@ -10,7 +10,7 @@ import { compose } from 'redux';
 import DefaultButton from 'components/Button';
 import Challenge from 'containers/Challenge';
 import {Route, Link} from 'react-router-dom';
-import Welcome from 'containers/Welcome';
+import ActiveGames from 'containers/ActiveGames';
 import FightRequests from 'containers/FightRequests';
 
 const StyledButton = styled(DefaultButton)`
@@ -66,7 +66,7 @@ class MembersPage extends Component {
           Welcome {this.props.user.name}: {this.props.user.email}
         </Text>
         <FightRequests />
-        <Route path="/" exact component={Welcome}/>
+        <Route path="/" exact component={ActiveGames}/>
         <Route path="/Challenge" component={Challenge}/>
       </Wrapper>
     );
