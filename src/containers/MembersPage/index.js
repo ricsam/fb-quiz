@@ -11,16 +11,19 @@ import DefaultButton from 'components/Button';
 import Challenge from 'containers/Challenge';
 import {Route, Link} from 'react-router-dom';
 import Welcome from 'containers/Welcome';
+import FightRequests from 'containers/FightRequests';
 
 const StyledButton = styled(DefaultButton)`
   width: 100%;
+  white-space: normal !important;
+  height: 100%;
 `;
 
 
 
 const Button = ({ children, to, exact }) => (
   <Route path={to} exact={exact} children={({ match }) => (
-    <Link to={to} style={{'flex': '1'}}><StyledButton disabled={!!match}>{children}</StyledButton></Link>
+    <Link to={to} style={{'flex': '1', 'minWidth': '6em'}}><StyledButton disabled={!!match}>{children}</StyledButton></Link>
   )}/>
 );
 
@@ -30,13 +33,17 @@ const Nav = styled.div`
   flex-wrap: wrap;
   @media (min-width: 480px) {
   }
+  align-items: stretch;
 `;
 
 const Wrapper = styled.div`
   max-width: 800px;
   margin: auto;
 `;
-
+const Text = styled.p`
+  margin-top: 1em;
+  text-align: left;
+`;
 
 class MembersPage extends Component {
   // constructor(props) {
@@ -55,6 +62,10 @@ class MembersPage extends Component {
           <Button to="/wip">Submit your own questions</Button>
           <Button to="/wip">Vote on questions to be added</Button>
         </Nav>
+        <Text>
+          Welcome {this.props.user.name}: {this.props.user.email}
+        </Text>
+        <FightRequests />
         <Route path="/" exact component={Welcome}/>
         <Route path="/Challenge" component={Challenge}/>
       </Wrapper>

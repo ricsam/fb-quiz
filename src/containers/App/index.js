@@ -11,9 +11,12 @@ import MembersPage from 'containers/MembersPage';
 import { Alert } from 'reactstrap';
 import firebase from 'firebase/app';
 import { Container, Row, Col } from 'reactstrap';
+import Loader from 'components/Loader';
 
 import { selectUser } from './selectors';
 import userSaga from './userSaga';
+
+import logo from './logo.png';
 
 // const rotate = keyframes`
 //   from { transform: rotate(0deg); }
@@ -25,13 +28,16 @@ import userSaga from './userSaga';
 //   height: 80px;
 // `;
 
+const LoginButton = styled(LoadingButton)`
+  margin: 1em;
+`;
+
 const AppWrapper = styled(Container)`
   text-align: center;
   background-color: #1f1f1f;
 `;
 
 const Header = styled.header`
-  height: 9.375rem;
   padding: 1.25rem;
   color: white;
 `;
@@ -41,6 +47,11 @@ const Title = styled.h1`
   color: #fff;
   font-family: TradeGothic, Oswald, sans-serif;
   font-weight: 300;
+`;
+
+const Img = styled.img`
+  width: 80%;
+  max-width: 400px;
 `;
 
 const RowCol = props => (
@@ -80,23 +91,24 @@ class App extends Component {
         <RowCol>
           <Header>
             <Title>StockFight</Title>
+            <Img src={logo} alt=""/>
           <If case={!this.props.user.uid}>
-            <LoadingButton
+            <LoginButton
               onClick={this.login}
               loading={this.props.user.login.loading}
               color="success"
             >
               Login
-            </LoadingButton>
+            </LoginButton>
           </If>
           <If case={this.props.user.uid /* logged in*/}>
-            <LoadingButton
+            <LoginButton
               onClick={this.logout}
               loading={this.props.user.logout.loading}
               color="danger"
             >
               Logout
-            </LoadingButton>
+            </LoginButton>
           </If>
           </Header>
         </RowCol>
@@ -109,9 +121,15 @@ class App extends Component {
               {this.props.user.login.error}
               <br />
               {this.props.user.logout.error}
+              <br />
+              {this.props.user.initializationError}
             </Alert>
           </If>
-          <If case={this.props.user.uid /* logged in*/}>
+          <If case={this.props.user.initializing}>
+            Initializing user
+            <Loader />
+          </If>
+          <If case={this.props.user.initialized && this.props.user.uid /* logged in*/}>
             <MembersPage />
           </If>
         </RowCol>

@@ -74,6 +74,35 @@ async function fbRemoveUser(credential) {
 
 function* createUser() {
   const user = firebase.auth().currentUser;
+  const db = firebase.firestore();
+  const usersRef = db.collection('users');
+  const userRef = usersRef.doc(user.uid);
+  try {
+
+    const userSnapshot = yield call(async () => await userRef.get());
+    if ( ! userSnapshot.exists ) {
+      yield call(async () => await userRef.set({
+        uid: user.uid,
+        email: user.email,
+        name: user.displayName,
+        rating: 1500,
+        volatility: 0.06,
+        // recentlyPlayedWith: [],
+        // fightRequestsFrom: [],
+        // fightRequestsTo: [],
+      }));
+    }
+  } catch (error) {
+    yield put({
+      type: 'fb:initialization error',
+      error,
+    });
+  }
+
+  yield put({
+    type: 'fb:initialized user',
+  })
+
 }
 
 // denna funktion kommer från index.js att dispatcha logout action.

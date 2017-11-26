@@ -28,6 +28,10 @@ const initialState = fromJS({
   email: false,
   name: false,
 
+  initializing: false,
+  initialized: false,
+  initializationError: false,
+
 });
 
 function appReducer(state = initialState, action) {
@@ -63,11 +67,25 @@ function appReducer(state = initialState, action) {
         .setIn(['login', 'error'], false)
         .set('uid', action.uid)
         .set('email', action.email)
-        .set('name', action.name);
+        .set('name', action.name)
+        .set('initializing', true);
 
     case "fb:logged out":
-      /* resetar allt till inital state */
+      /* reseting everything to the initial state */
       return initialState
+
+    case 'fb:initialization error':
+      return state
+        .set('initializing', false)
+        .set('initializationError', true);
+
+      
+    case 'fb:initialized user':
+      return state
+        .set('initializing', false)
+        .set('initialized', true)
+
+
 
     default:
       return state;

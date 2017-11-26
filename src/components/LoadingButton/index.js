@@ -18,7 +18,6 @@ export default class LoadingButton extends React.PureComponent {
     const props = {...this.props};
     delete props.loading;
 
-    console.log(props);
     return (
       <Button {...props}>
         {!this.props.loading && <span>{this.props.children}</span>}
