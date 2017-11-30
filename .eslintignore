@@ -1,0 +1,8 @@
+
+.gitignore
+config/*
+functions/*
+public/*
+scripts/*
+*.test.js
+src/registerServiceWorker.js

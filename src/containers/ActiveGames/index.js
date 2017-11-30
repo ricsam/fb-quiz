@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import injectSaga from 'utils/injectSaga';
@@ -15,6 +16,11 @@ class ActiveGames extends Component {
   //   super(props);
   // }
 
+  static propTypes = {
+    dispatch: PropTypes.func,
+    activeGames: PropTypes.object,
+  };
+
   componentDidMount() {
     this.props.dispatch({
       type: 'fetch games',
@@ -23,13 +29,12 @@ class ActiveGames extends Component {
 
   render() {
     const opponents = this.props.activeGames.opponents;
-    console.log(this.props);
     return (
       <Wrapper>
         <h3>Active games:</h3>
         <If case={Object.keys(opponents).length}>
           <ul>
-            {Object.keys(opponents).map(uid => <li key={uid}>{opponents[uid].against}</li>) }
+            {Object.keys(opponents).map((uid) => <li key={uid}>{opponents[uid].against}</li>) }
           </ul>
         </If>
       </Wrapper>
@@ -38,12 +43,10 @@ class ActiveGames extends Component {
 }
 
 
-const mapStateToProps = (state) => {
-  return {
-    activeGames: state.get('activeGames').toJS(),
-  };
-};
-const mapDispatchToProps = (dispatch) => ({dispatch});
+const mapStateToProps = (state) => ({
+  activeGames: state.get('activeGames').toJS(),
+});
+const mapDispatchToProps = (dispatch) => ({ dispatch });
 
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);

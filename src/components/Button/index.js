@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import {Button as BSButton} from 'reactstrap';
+import { Button as BSButton } from 'reactstrap';
 
 const ButtonBase = styled(BSButton)`
   font-size: 1rem;
@@ -26,7 +26,7 @@ const ButtonBase = styled(BSButton)`
 `;
 
 export default function Button(_props) {
-  const props = {..._props};
+  const props = { ..._props };
   const children = props.children;
   delete props.children;
 
@@ -36,5 +36,5 @@ export default function Button(_props) {
 }
 
 Button.propTypes = {
-  children: PropTypes.any
+  children: PropTypes.any,
 };

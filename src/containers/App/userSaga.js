@@ -6,30 +6,29 @@ async function loginGoogle() {
   if (firebase.auth().currentUser) {
     await firebase.auth().signOut();
     return false;
-  } else {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-    const result = await firebase.auth().signInWithPopup(provider);
-    return result.credential;
   }
+  const provider = new firebase.auth.GoogleAuthProvider();
+    // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+  const result = await firebase.auth().signInWithPopup(provider);
+  return result.credential;
 }
 
-export function* login(action) {
+export function* login() {
   try {
-    const credential = yield call(loginGoogle)
+    const credential = yield call(loginGoogle);
     if (credential) {
       yield put({
-        type: "fb:set credential",
-        credential
+        type: 'fb:set credential',
+        credential,
       });
     }
   } catch (error) {
     yield put({
-      type: "fb:login error",
-      message: error.message
+      type: 'fb:login error',
+      message: error.message,
     });
   }
-  // OBS: an action will automatically be dispatched from index.js via firebase.auth().onAuthStateChanged 
+  // OBS: an action will automatically be dispatched from index.js via firebase.auth().onAuthStateChanged
 }
 
 async function fbLogout() {
@@ -40,13 +39,12 @@ export function* logout() {
   try {
     yield call(fbLogout);
   } catch (error) {
-    console.log(error);
     yield put({
-      type: "fb:logout error",
-      message: error.message
+      type: 'fb:logout error',
+      message: error.message,
     });
   }
-  // OBS: an action will automatically be dispatched from index.js via firebase.auth().onAuthStateChanged 
+  // OBS: an action will automatically be dispatched from index.js via firebase.auth().onAuthStateChanged
 }
 
 
@@ -54,22 +52,22 @@ export function* logout() {
 async function fbRemoveUser(credential) {
   const user = firebase.auth().currentUser;
   try {
-    await user.delete()
-  } catch(error) {
-    if ( ! error.code === 'auth/requires-recent-login' ) console.log(error);
+    await user.delete();
+  } catch (error) {
+    // if (!error.code === 'auth/requires-recent-login') console.log(error); // ERROR!
     if (error.code === 'auth/requires-recent-login') {
       try {
         /* user must reloggin */
-        if ( ! credential ) {
+        if (!credential) {
           return;
         }
         await user.reauthenticateWithCredential(credential);
         await user.delete();
-      } catch(error) {
-        console.log(error);
+      } catch (err) {
+        // console.log(err); // ERROR!
       }
     }
-  } 
+  }
 }
 
 function* createUser() {
@@ -78,10 +76,9 @@ function* createUser() {
   const usersRef = db.collection('users');
   const userRef = usersRef.doc(user.uid);
   try {
-
-    const userSnapshot = yield call(async () => await userRef.get());
-    if ( ! userSnapshot.exists ) {
-      yield call(async () => await userRef.set({
+    const userSnapshot = yield call(async () => userRef.get());
+    if (!userSnapshot.exists) {
+      yield call(async () => userRef.set({
         uid: user.uid,
         email: user.email,
         name: user.displayName,
@@ -101,13 +98,12 @@ function* createUser() {
 
   yield put({
     type: 'fb:initialized user',
-  })
-
+  });
 }
 
 // denna funktion kommer från index.js att dispatcha logout action.
 function* deleteUser() {
-  const credential = yield select(state => state.get('credential') || false);
+  const credential = yield select((state) => state.get('credential') || false);
   yield call(fbRemoveUser, credential);
 }
 

@@ -15,7 +15,6 @@ export default function (state = initialState, action) {
       return state
         .set('loading', true);
     case 'fr:users loaded':
-      console.log(action.requests);
       return state
         .set('loading', false)
         .set('requests', fromJS(action.requests));
@@ -25,7 +24,6 @@ export default function (state = initialState, action) {
         .setIn(['requests', action.uid, 'loadingDecline'], true);
 
     case 'fr:accept':
-      console.log(action.uid, state.get('requests').toJS());
       return state
         .setIn(['requests', action.uid, 'loadingAccept'], true);
 
@@ -35,7 +33,6 @@ export default function (state = initialState, action) {
         .removeIn(['requests', action.uid]);
 
     case 'fr:challenge accepted':
-      console.log('challenge accepted!', action, state.toJS());
       return state
         .removeIn(['requests', action.uid]);
 

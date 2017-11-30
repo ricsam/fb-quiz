@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -9,7 +10,7 @@ import { compose } from 'redux';
 // import firebase from "firebase/app";
 import DefaultButton from 'components/Button';
 import Challenge from 'containers/Challenge';
-import {Route, Link} from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 import ActiveGames from 'containers/ActiveGames';
 import FightRequests from 'containers/FightRequests';
 
@@ -19,13 +20,32 @@ const StyledButton = styled(DefaultButton)`
   height: 100%;
 `;
 
-
-
+function LinkButton({ match, to, children }) {
+  return (
+    <Link to={to} style={{ flex: '1', minWidth: '6em' }}>
+      <StyledButton disabled={!!match}>{children}</StyledButton>
+    </Link>
+  );
+}
+LinkButton.propTypes = {
+  children: PropTypes.any,
+  to: PropTypes.string,
+  match: PropTypes.bool,
+};
 const Button = ({ children, to, exact }) => (
-  <Route path={to} exact={exact} children={({ match }) => (
-    <Link to={to} style={{'flex': '1', 'minWidth': '6em'}}><StyledButton disabled={!!match}>{children}</StyledButton></Link>
-  )}/>
+  <Route
+    path={to}
+    exact={exact}
+  >
+    <LinkButton to={to}>{children}</LinkButton>
+
+  </Route>
 );
+Button.propTypes = {
+  children: PropTypes.any,
+  to: PropTypes.string,
+  exact: PropTypes.bool,
+};
 
 const Nav = styled.div`
   text-align: left;
@@ -45,7 +65,7 @@ const Text = styled.p`
   text-align: left;
 `;
 
-class MembersPage extends Component {
+class MembersPage extends React.PureComponent {
   // constructor(props) {
   //   super(props);
   // }
@@ -54,7 +74,9 @@ class MembersPage extends Component {
     return (
       <Wrapper>
         <Nav>
-          <Button to="/" exact>Home</Button>
+          <Button to="/" exact>
+            Home
+          </Button>
           <Button to="/challenge">Challenge a member</Button>
           <Button to="/wip">Play live game (22 online)</Button>
           <Button to="/wip">Leaderboards</Button>
@@ -66,19 +88,19 @@ class MembersPage extends Component {
           Welcome {this.props.user.name}: {this.props.user.email}
         </Text>
         <FightRequests />
-        <Route path="/" exact component={ActiveGames}/>
-        <Route path="/Challenge" component={Challenge}/>
+        <Route path="/" exact component={ActiveGames} />
+        <Route path="/Challenge" component={Challenge} />
       </Wrapper>
     );
   }
 }
 
-
-const mapStateToProps = () => {
-  return (state, props) => state.toJS()
+MembersPage.propTypes = {
+  user: PropTypes.object,
 };
-const mapDispatchToProps = (dispatch) => ({dispatch});
 
+const mapStateToProps = () => (state) => state.toJS();
+const mapDispatchToProps = (dispatch) => ({ dispatch });
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
@@ -88,5 +110,5 @@ const withConnect = connect(mapStateToProps, mapDispatchToProps);
 export default compose(
   // withReducer,
   // withSaga,
-  withConnect,
+  withConnect
 )(MembersPage);

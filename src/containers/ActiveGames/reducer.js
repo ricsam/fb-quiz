@@ -2,11 +2,11 @@
 import { fromJS } from 'immutable';
 
 const initialState = fromJS({
-  opponents: {}
+  opponents: {},
 });
 
 export default function reducer(state = initialState, action) {
-  switch(action.type) {
+  switch (action.type) {
     case 'set opponents':
       return state.set('opponents', fromJS(action.opponents));
     default:

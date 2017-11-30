@@ -16,17 +16,17 @@ import { fromJS } from 'immutable';
 // The initial state of the App
 const initialState = fromJS({
   uid: '',
-  pageLoading: false
+  pageLoading: false,
 });
 
 function appReducer(state = initialState, action) {
   switch (action.type) {
-    case "fb:logged in":
+    case 'fb:logged in':
       return state
         .set('uid', action.uid);
-    case "fb:logged out":
+    case 'fb:logged out':
       /* resetar allt till inital state */
-      return initialState
+      return initialState;
     default:
       return state;
   }

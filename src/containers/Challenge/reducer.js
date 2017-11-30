@@ -10,7 +10,6 @@ const initialState = fromJS({
 });
 
 export default function reducer(state = initialState, action) {
-
   switch (action.type) {
     case 'get users':
       return state.set('usersLoading', true);
@@ -37,5 +36,4 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
-
 }

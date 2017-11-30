@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import injectSaga from 'utils/injectSaga';
 import If from 'components/If';
 import injectReducer from 'utils/injectReducer';
-import userReducer from './userReducer';
 import LoadingButton from 'components/LoadingButton';
 import MembersPage from 'containers/MembersPage';
-import { Alert } from 'reactstrap';
 import firebase from 'firebase/app';
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col, Alert } from 'reactstrap';
 import Loader from 'components/Loader';
+
+import userReducer from './userReducer';
 
 import { selectUser } from './selectors';
 import userSaga from './userSaga';
@@ -54,13 +55,22 @@ const Img = styled.img`
   max-width: 400px;
 `;
 
-const RowCol = props => (
+const RowCol = (props) => (
   <Row>
     <Col>{props.children}</Col>
   </Row>
 );
+RowCol.propTypes = {
+  children: PropTypes.any,
+};
 
 class App extends Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func,
+    user: PropTypes.object,
+  };
+
   constructor(props) {
     super(props);
     this.login = this.login.bind(this);
@@ -91,25 +101,25 @@ class App extends Component {
         <RowCol>
           <Header>
             <Title>StockFight</Title>
-            <Img src={logo} alt=""/>
-          <If case={!this.props.user.uid}>
-            <LoginButton
-              onClick={this.login}
-              loading={this.props.user.login.loading}
-              color="success"
-            >
+            <Img src={logo} alt="" />
+            <If case={!this.props.user.uid}>
+              <LoginButton
+                onClick={this.login}
+                loading={this.props.user.login.loading}
+                color="success"
+              >
               Login
             </LoginButton>
-          </If>
-          <If case={this.props.user.uid /* logged in*/}>
-            <LoginButton
-              onClick={this.logout}
-              loading={this.props.user.logout.loading}
-              color="danger"
-            >
+            </If>
+            <If case={this.props.user.uid /* logged in */}>
+              <LoginButton
+                onClick={this.logout}
+                loading={this.props.user.logout.loading}
+                color="danger"
+              >
               Logout
             </LoginButton>
-          </If>
+            </If>
           </Header>
         </RowCol>
 
@@ -129,7 +139,7 @@ class App extends Component {
             Initializing user
             <Loader />
           </If>
-          <If case={this.props.user.initialized && this.props.user.uid /* logged in*/}>
+          <If case={this.props.user.initialized && this.props.user.uid /* logged in */}>
             <MembersPage />
           </If>
         </RowCol>
@@ -138,12 +148,10 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = () => {
-  return (state, props) => ({
-    user: selectUser(state).toJS(),
-  });
-};
-const mapDispatchToProps = dispatch => ({ dispatch });
+const mapStateToProps = () => (state) => ({
+  user: selectUser(state).toJS(),
+});
+const mapDispatchToProps = (dispatch) => ({ dispatch });
 
 const withConnect = connect(mapStateToProps, mapDispatchToProps);
 

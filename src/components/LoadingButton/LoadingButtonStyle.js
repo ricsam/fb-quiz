@@ -1,4 +1,4 @@
-import styled, {css, keyframes} from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import styledButton from 'components/Button';
 
 export const Button = styled(styledButton)`
@@ -16,15 +16,17 @@ export const CircleSpinner = styled.div`
 `;
 
 
+/* eslint-disable no-mixed-operators */
 const transform = css`
-  -webkit-transform: rotate(${({i}) => i * 30}deg);
-  -ms-transform: rotate(${({i}) => i * 30}deg);
-  transform: rotate(${({i}) => i * 30}deg);
+  -webkit-transform: rotate(${({ i }) => i * 30}deg);
+  -ms-transform: rotate(${({ i }) => i * 30}deg);
+  transform: rotate(${({ i }) => i * 30}deg);
   :before {
-    -webkit-animation-delay: -${({i}) => 1.2 - 0.1 * i}s;
-    animation-delay: -${({i}) => 1.2 - 0.1 * i}s;
+    -webkit-animation-delay: -${({ i }) => 1.2 - 0.1 * i}s;
+    animation-delay: -${({ i }) => 1.2 - 0.1 * i}s;
   }
 `;
+/* eslint-enable no-mixed-operators */
 
 
 const circleFadeDelay = keyframes`
@@ -35,7 +37,6 @@ const circleFadeDelay = keyframes`
   40% {
     opacity: 1; }
 `;
-
 
 
 export const Circle = styled.div`

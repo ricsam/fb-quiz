@@ -4,7 +4,7 @@ import createGame from 'functions/createGame';
 import removeFightRequest from 'functions/removeFightRequest';
 
 
-function* acceptFight({uid}) {
+function* acceptFight({ uid }) {
   const currentUser = firebase.auth().currentUser;
 
   const gameReference = yield* createGame({
@@ -17,7 +17,6 @@ function* acceptFight({uid}) {
     id: gameReference.id,
     uid,
   });
-
 }
 
 function* resolveGetRequests() {
@@ -28,7 +27,6 @@ function* resolveGetRequests() {
 }
 
 export function* declineChallenge({ uid }) {
-
   const currentUser = firebase.auth().currentUser;
 
   yield* removeFightRequest({ takerUID: currentUser.uid, makerUID: uid });
@@ -49,16 +47,16 @@ function* getRequests() {
   const requestsRef = users
     .doc(currentUser.uid)
     .collection('fightRequestsFrom');
-  const querySnapshot = yield call(async () => await requestsRef.get());
+  const querySnapshot = yield call(async () => requestsRef.get());
   if (querySnapshot.empty) {
     return yield* resolveGetRequests();
-  } else {
-    const userDocuments = yield call(
+  }
+  const userDocuments = yield call(
       async () =>
-        await Promise.all(
+        Promise.all(
           querySnapshot.docs.map(
-            doc =>
-              new Promise(async resolve => {
+            (doc) =>
+              new Promise(async (resolve) => {
                 resolve([
                   await doc.get('reference').get(),
                   doc.get('timestamp'),
@@ -68,23 +66,18 @@ function* getRequests() {
         )
     );
 
-    console.log(userDocuments);
 
-    if (!userDocuments) {
-      return yield* resolveGetRequests();
-    }
-
-    const requests = userDocuments.reduce((o, [userDoc, timestamp]) => {
-      o[userDoc.get('uid')] = { name: userDoc.get('name'), timestamp };
-      return o;
-    }, {});
-    console.log(requests);
-
-    return yield put({
-      type: 'fr:users loaded',
-      requests,
-    });
+  if (!userDocuments) {
+    return yield* resolveGetRequests();
   }
+
+  const requests = userDocuments.reduce((o, [userDoc, timestamp]) => ({ ...o, [userDoc.get('uid')]: { name: userDoc.get('name'), timestamp } }), {});
+
+  return yield put({
+    type: 'fr:users loaded',
+    requests,
+  });
+
 
   // yield
 }

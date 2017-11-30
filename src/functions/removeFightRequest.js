@@ -3,7 +3,6 @@ import { call } from 'redux-saga/effects';
 
 
 export default function* removeFightRequest({ takerUID, makerUID }) {
-
   const db = firebase.firestore();
   const usersRef = db.collection('users');
   const requestsFromRef = usersRef
@@ -11,13 +10,13 @@ export default function* removeFightRequest({ takerUID, makerUID }) {
     .collection('fightRequestsFrom');
   /* check if request has already been done */
   const querySnapshotFrom = yield call(
-    async () => await requestsFromRef.where('uid', '==', makerUID).get()
+    async () => requestsFromRef.where('uid', '==', makerUID).get()
   );
   if (!querySnapshotFrom.empty) {
     /* document does exist */
 
     yield call(async () => {
-      await Promise.all(querySnapshotFrom.docs.map(doc => doc.ref.delete()));
+      await Promise.all(querySnapshotFrom.docs.map((doc) => doc.ref.delete()));
     });
   }
 
@@ -26,13 +25,12 @@ export default function* removeFightRequest({ takerUID, makerUID }) {
     .collection('fightRequestsTo');
   /* check if request has already been done */
   const querySnapshotTo = yield call(
-    async () => await requestsToRef.where('uid', '==', takerUID).get()
+    async () => requestsToRef.where('uid', '==', takerUID).get()
   );
   if (!querySnapshotTo.empty) {
     /* document already exist */
     yield call(async () => {
-      await Promise.all(querySnapshotTo.docs.map(doc => doc.ref.delete()));
+      await Promise.all(querySnapshotTo.docs.map((doc) => doc.ref.delete()));
     });
   }
-
 }

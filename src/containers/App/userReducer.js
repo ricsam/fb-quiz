@@ -38,9 +38,9 @@ function appReducer(state = initialState, action) {
   switch (action.type) {
 
     /* used for account deletion */
-    case "fb:set credential":
+    case 'fb:set credential':
       return state
-        .set('credential', action.credential); 
+        .set('credential', action.credential);
 
     /* Login */
     case 'fb:login':
@@ -61,7 +61,7 @@ function appReducer(state = initialState, action) {
         .setIn(['logout', 'loading'], false)
         .setIn(['logout', 'error'], action.message);
 
-    case "fb:logged in":
+    case 'fb:logged in':
       return state
         .setIn(['login', 'loading'], false)
         .setIn(['login', 'error'], false)
@@ -70,21 +70,20 @@ function appReducer(state = initialState, action) {
         .set('name', action.name)
         .set('initializing', true);
 
-    case "fb:logged out":
+    case 'fb:logged out':
       /* reseting everything to the initial state */
-      return initialState
+      return initialState;
 
     case 'fb:initialization error':
       return state
         .set('initializing', false)
         .set('initializationError', true);
 
-      
+
     case 'fb:initialized user':
       return state
         .set('initializing', false)
-        .set('initialized', true)
-
+        .set('initialized', true);
 
 
     default:
